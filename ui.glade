@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="duration_filter_value">
+    <property name="upper">100</property>
+    <property name="step_increment">0.01</property>
+    <property name="page_increment">10</property>
+    <signal name="value-changed" handler="onFilterChanged" swapped="no"/>
+  </object>
+  <object class="GtkTreeStore" id="traces">
+    <columns>
+      <!-- column-name level -->
+      <column type="gint"/>
+      <!-- column-name number -->
+      <column type="gint"/>
+      <!-- column-name begin -->
+      <column type="gfloat"/>
+      <!-- column-name end -->
+      <column type="gfloat"/>
+      <!-- column-name duration -->
+      <column type="gfloat"/>
+      <!-- column-name memory -->
+      <column type="guint"/>
+      <!-- column-name function -->
+      <column type="gchararray"/>
+      <!-- column-name filename -->
+      <column type="gchararray"/>
+      <!-- column-name arguments -->
+      <column type="gchararray"/>
+      <!-- column-name visible -->
+      <column type="gboolean"/>
+    </columns>
+  </object>
+  <object class="GtkTreeModelFilter" id="traces_filtered">
+    <property name="child_model">traces</property>
+  </object>
+  <object class="GtkWindow" id="windowMain">
+    <property name="name">GTK Python XDebug Trace File Viewer</property>
+    <property name="can_focus">False</property>
+    <signal name="destroy" handler="onDeleteWindow" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkScale" id="duration_filter_scale">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_left">20</property>
+            <property name="margin_right">20</property>
+            <property name="adjustment">duration_filter_value</property>
+            <property name="round_digits">5</property>
+            <property name="digits">5</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
+            <property name="min_content_width">700</property>
+            <property name="min_content_height">400</property>
+            <child>
+              <object class="GtkTreeView" id="traces_view">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="model">traces_filtered</property>
+                <property name="expander_column">expander</property>
+                <property name="enable_grid_lines">both</property>
+                <signal name="row-collapsed" handler="onRowCollapsed" swapped="no"/>
+                <signal name="row-expanded" handler="onRowExpanded" swapped="no"/>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="expander">
+                    <property name="title" translatable="yes">#</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="level">
+                    <property name="title" translatable="yes">Level</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="level_column"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Number</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="number_column"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Begin</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="begin_column"/>
+                      <attributes>
+                        <attribute name="text">2</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">End</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="end_column"/>
+                      <attributes>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Duration</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="duration_column"/>
+                      <attributes>
+                        <attribute name="text">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Memory</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="memory_column"/>
+                      <attributes>
+                        <attribute name="text">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Function</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="function_column"/>
+                      <attributes>
+                        <attribute name="text">6</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">File</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="file_column"/>
+                      <attributes>
+                        <attribute name="text">7</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Arguments</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="arguments_column"/>
+                      <attributes>
+                        <attribute name="text">8</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
