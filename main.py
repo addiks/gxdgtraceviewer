@@ -31,7 +31,7 @@ class TraceEntry:
     __row_path = None
     __tree_store = None
     __tree_view = None
-    
+
     def __init__(
         self,
         level,
@@ -51,14 +51,14 @@ class TraceEntry:
         self.__arguments = arguments
         self.__children = []
         self.__visible = True
-        
+
     def addChild(self, child):
         self.__children.append(child);
-        
+
     def close(self, end):
         self.__end = end
         self.__duration = self.__end - self.__begin
-        
+
     def asListStoreEntry(self):
         return [
             self.__level,
@@ -144,16 +144,16 @@ class TraceFile:
     __entries = []
     __highest_duration = 0.0
 
-    def __init__(self, filePath):
+    def __init__(self, file_handle):
 
-        with open(filePath) as handle:
-
+        with file_handle as handle:
             print(handle.readline(), end="") # Version: 3.3.2
             print(handle.readline(), end="") # File format: 4
 
             if 'TRACE START' not in handle.readline():
                 print('Invalid format for the trace. Did you forget to change the trace format to be machine readable?')
                 print('Try adding: xdebug.trace_format=1 to the config')
+
 
             reader = csv.reader(handle, delimiter="\t")
             level = 0
@@ -169,17 +169,17 @@ class TraceFile:
                     # print('ENTRY')
 
                     # The format can be found here: https://xdebug.org/docs/trace#trace_format
-                    [ level, function_number, zero, begin_time, memory, function_name, user_defined, included_file, filename, line_number ] = row
-                    if len(row) > 10:
+                    [ level, function_number, zero, begin_time, memory, function_name, user_defined, included_file, filename, line_number, *args ] = row
+                    if len(args) != 0:
                         arguments = "TODO"
                     else:
-                        arguments = "Feature disabled"
+                        arguments = "Feature disabled. Set xdebug.collect_params=1"
 
                     newEntry = TraceEntry(
                         int(level), # Level
                         int(function_number), # Number
                         float(begin_time), # Begin
-                        TraceFile.format_memory(int(memory)), # Memory
+                        int(memory), # Memory
                         function_name, # Function
                         f"{filename}:{line_number}", # FileName
                         arguments
@@ -207,12 +207,6 @@ class TraceFile:
 
                 if row[2] == 'R': # Return
                     print('RETURN')
-
-    def format_memory(byte_count: int) -> str:
-        units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-        unit = 0 if byte_count == 0 else math.floor(math.log(byte_count, 1028))
-
-        return f"{byte_count / (1028**unit), 2} {unit}"
 
     def attachToStore(self, treeStore, treeView, treeStoreFilter):
         for root in self.__entries:
@@ -257,7 +251,13 @@ if len(sys.argv) == 2 and os.path.exists(sys.argv[1]):
 else:
     filename = askopenfilename() # show an "Open" dialog box and return the path to the selected file
 
-traceFile = TraceFile(filename)
+if filename.endswith('.gz'):
+    import gzip, io
+    file_handle = io.TextIOWrapper(gzip.open(filename, 'rb'))
+else:
+    file_handle = open(filename)
+
+traceFile = TraceFile(file_handle)
 
 handler = Handler(traceFile)
 
